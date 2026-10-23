@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+  <title>Fruit AR - Apple</title>
+
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+ <!-- Nhúng thư viện xử lý vuốt chạm tương tác (Gesture Detector) -->
+    <script src="https://githack.com"></script>
+</head>
+
+<body style="margin: 0; font-family: Arial, sans-serif;">
+
+
+<a-scene
+  mindar-image="imageTargetSrc: ./targets.mind;"
+  color-space="sRGB"
+  renderer="colorManagement: true"
+  vr-mode-ui="enabled: false"
+  device-orientation-permission-ui="enabled: false">
+
+  <a-assets>
+    <a-asset-item id="appleModel" src="./tao111.glb"></a-asset-item>
+  </a-assets>
+
+  <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+  <a-entity mindar-image-target="targetIndex: 0">
+    <a-gltf-model
+      id="apple"
+      src="#appleModel"
+      position="0 0 0"
+      rotation="0 90 0"
+      scale="1 1 1">
+    </a-gltf-model>
+  </a-entity>
+</a-scene>
+
+<script>
+  const apple = document.querySelector("#apple");
+  const target = document.querySelector("[mindar-image-target]");
+  let size = 0.15;
+
+  target.addEventListener("targetFound", () => {
+    apple.setAttribute("animation", {
+      property: "scale",
+      from: "0.001 0.001 0.001",
+      to: `${size} ${size} ${size}`,
+      dur: 800,
+      easing: "easeOutElastic"
+    });
+  });
+
+  target.addEventListener("targetLost", () => {
+    apple.removeAttribute("animation");
+    apple.setAttribute("scale", "0.001 0.001 0.001");
+  });
+
+  apple.addEventListener("click", () => {
+    size = size >= 0.3 ? 0.15 : size + 0.05;
+    apple.setAttribute("animation", {
+      property: "scale",
+      to: `${size} ${size} ${size}`,
+      dur: 250,
+      easing: "easeOutQuad"
+    });
+  });
+</script>
+
+
+</body>
+</html>
